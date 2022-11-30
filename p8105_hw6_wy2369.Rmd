@@ -34,7 +34,7 @@ scale_fill_discrete = scale_fill_viridis_d
 
 # Problem 2
 
-### Read and clean
+### Read and clean data
 
 Create a `city_state` variable and a `homicide_status` (binary) variable indicating whether the homicide is solved. Number 0 means "unsolved" and 1 means "solved"
 
@@ -116,5 +116,23 @@ homicide_reg %>%
        y = "Estimated odds ratios") 
 ```
 
+ comment on the plot.
+
+
+
 # Problem 3
+
+### Load and clean data
+
+Load and clean the data and check for missing data using this code chunk. 
+
+```{r}
+birthweight_data = 
+  read_csv("./data/birthweight.csv") %>% 
+  janitor::clean_names() 
+
+skimr::skim(birthweight_data)
+```
+
+Based on these results, there is no missing data in this dataset and 20 variables are all numeric. 
 
