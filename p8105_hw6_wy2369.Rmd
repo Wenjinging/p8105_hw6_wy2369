@@ -116,8 +116,7 @@ homicide_reg %>%
        y = "Estimated odds ratios") 
 ```
 
- comment on the plot.
-
+Based on this plot, New York,NY might have the lowest estimated odds ratio for solving homicides comparing male victims to female victims, and Albuquerque,NM might have highest estimated odds ratio comparing male victims to female victims. There are some wide confidence intervals shown in the plot, for example Fresno,CA, Stockton,CA and Albuquerque,NM. 
 
 
 # Problem 3
@@ -135,4 +134,8 @@ skimr::skim(birthweight_data)
 ```
 
 Based on these results, there is no missing data in this dataset and 20 variables are all numeric. 
+
+### Fit a regression model
+
+Propose a regression model for birthweight. This model may be based on a hypothesized structure for the factors that underly birthweight, on a data-driven model-building process, or a combination of the two. Describe your modeling process and show a plot of model residuals against fitted values – use add_predictions and add_residuals in making this plot.
 
