@@ -95,10 +95,10 @@ homicide_reg =
     upper_CI = exp(estimate + 1.96 * std.error)
   ) %>% 
   filter(term == "victim_sexMale") %>% 
-  select(city_state, estimate, odds_ratio, lower_CI, upper_CI) %>% 
-  knitr::kable(digits = 3)
+  select(city_state, estimate, odds_ratio, lower_CI, upper_CI) 
 
-homicide_reg 
+homicide_reg %>%
+  knitr::kable(digits = 3)
 ```
 
 ### Create a plot 
@@ -106,9 +106,15 @@ homicide_reg
 The plot shows the estimated odds ratios and confidence intervals for each city. 
 
 ```{r}
-
-  
+homicide_reg %>%
+  ggplot(aes(x = fct_reorder(city_state,odds_ratio), y = odds_ratio)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(title = "The estimated odds ratios and confidence intervals for each city",
+       x = "City, State",
+       y = "Estimated odds ratios") 
 ```
 
-Organize cities according to estimated OR, and comment on the plot.
+# Problem 3
 
