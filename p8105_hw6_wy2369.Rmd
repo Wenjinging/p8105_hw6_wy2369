@@ -10,6 +10,9 @@ library(tidyverse)
 library(viridis)
 library(patchwork)
 library(olsrr)
+library(mgcv)
+library(modelr)
+
 
 knitr::opts_chunk$set(
 	echo = TRUE,
@@ -232,4 +235,51 @@ birthweight_data %>%
     title = "Residuals against Fitted values on stepwise_fit") +
   geom_line(aes(y = 0), color = "red")
 ```
+
+### Compare my model to two others
+
+This code chunk is to fit two other regression models using `lm`, and make this comparison in terms of the cross-validated prediction error using `crossv_mc`.
+
+`model_1`: use length at birth and gestational age as predictors (main effects only)
+`model_2`: use head circumference, length, sex, and all interactions (including the three-way interaction) between these
+
+```{r}
+model_1 = lm(bwt ~ blength + gaweeks, data = birthweight_data)
+model_2 = lm(bwt ~ bhead + blength + babysex + bhead*blength + bhead*babysex + blength*babysex + bhead*blength*babysex, data = birthweight_data)
+
+cv_df = 
+  crossv_mc(birthweight_data, 100) %>% 
+  mutate(
+    train = map(train, as_tibble),
+    test = map(test, as_tibble),
+    fit_1 = map(.x = train, ~lm(bwt ~ blength + gaweeks, data = .x)),
+    fit_2 = map(.x = train, ~lm(bwt ~ bhead + blength + babysex + bhead*blength + bhead*babysex + blength*babysex + bhead*blength*babysex, data = .x)),
+    myfit = map(.x = train, ~lm(bwt ~ babysex + bhead + blength + delwt + fincome + gaweeks + mheight + mrace + parity + ppwt + smoken, data = .x))
+  ) %>% 
+   mutate(
+     rmse_1 = map2_dbl(.x = fit_1, .y = test, ~rmse(model = .x, data = .y)),
+     rmse_2 = map2_dbl(.x = fit_2, .y = test, ~rmse(model = .x, data = .y)), 
+     rmse_myfit = map2_dbl(.x = myfit, .y = test, ~rmse(model = .x, data = .y))
+  )
+```
+
+### Make a plot to check RMSE
+
+Compare rmse of these three models, I use `geom_violin` function to make this graph. 
+
+```{r}
+cv_df %>% 
+  select(starts_with("rmse")) %>% 
+  pivot_longer(
+    everything(),
+    names_to = "model",
+    values_to = "rmse",
+    names_prefix = "rmse_ "
+  ) %>% 
+  ggplot(aes(x = model,y =rmse,color = model))+
+  geom_violin()
+```
+
+Based on the rmse values, 
+
 
