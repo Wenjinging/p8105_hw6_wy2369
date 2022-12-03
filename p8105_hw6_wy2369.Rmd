@@ -132,7 +132,7 @@ baltimore_reg =
 baltimore_reg
 ```
 
-From the table, I obtain the estimate is **-0.854**，adjusted odds_ratio is **0.426** and confidence interval is **(0.325, 0.558)** for solving homicides comparing male victims to female victims keeping all other variables fixed.
+From the table, I obtain the estimate is **-0.854**，adjusted odds_ratio is **0.426** and 95% confidence interval is **(0.325, 0.558)** for solving homicides comparing male victims to female victims keeping all other variables fixed.
 
 ### Fit a logistic regression for each cities
 
@@ -158,9 +158,12 @@ homicide_reg %>%
   knitr::kable(digits = 3)
 ```
 
-### Create a plot 
+This table shows estimates, odds ratios and 95% confidence intervals for each city for solving homicides comparing male victims to female victims keeping all other variables fixed.
 
-The plot shows the estimated odds ratios and confidence intervals for each city. 
+
+### Create a plot with errorbar
+
+The plot shows the estimated odds ratios and 95% confidence intervals for each city. 
 
 ```{r}
 homicide_reg %>%
@@ -180,19 +183,40 @@ Based on this plot, New York,NY might have the lowest estimated odds ratio for s
 
 ### Load and clean data
 
-Load and clean the data and check for missing data using this code chunk. 
+Load data from `birthweight.csv` and convert variables numeric to factor, for example babysex, frace, malform and mrace. Then check for missing data using this code chunk.
 
 ```{r}
 birthweight_data = 
   read_csv("./data/birthweight.csv") %>% 
-  janitor::clean_names() 
+  janitor::clean_names() %>% 
+   mutate(
+     babysex = as.factor(babysex),
+     frace = as.factor(frace),
+     malform = as.factor(malform),
+     mrace = as.factor(mrace))
 
 skimr::skim(birthweight_data)
 ```
 
-Based on these results, there is no missing data in this dataset and 20 variables are all numeric. 
+Based on these results, there is no missing data in this dataset.
 
 ### Fit a regression model
 
-Propose a regression model for birthweight. This model may be based on a hypothesized structure for the factors that underly birthweight, on a data-driven model-building process, or a combination of the two. Describe your modeling process and show a plot of model residuals against fitted values – use add_predictions and add_residuals in making this plot.
+Try to fit a regression model using `lm`, and preform the stepwise model selection using `step`.
+
+```{r}
+all_fit = lm(bwt~ ., data = birthweight_data) 
+  
+step(all_fit, direction = "both")
+```
+
+The model selection is stepwise model selection which is a data-driven model-building process. Based on the results, the best model using stepwise should be bwt ~ babysex + bhead + blength + delwt + fincome + gaweeks + mheight + mrace + parity + ppwt + smoken. 
+
+### Make a plot of residuals against fitted values
+
+Describe your modeling process and show a plot of model residuals against fitted values – use add_predictions and add_residuals in making this plot.
+
+```{r}
+
+```
 
