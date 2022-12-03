@@ -257,8 +257,8 @@ cv_df =
     myfit = map(.x = train, ~lm(bwt ~ babysex + bhead + blength + delwt + fincome + gaweeks + mheight + mrace + parity + ppwt + smoken, data = .x))
   ) %>% 
    mutate(
-     rmse_1 = map2_dbl(.x = fit_1, .y = test, ~rmse(model = .x, data = .y)),
-     rmse_2 = map2_dbl(.x = fit_2, .y = test, ~rmse(model = .x, data = .y)), 
+     rmse_fit_1 = map2_dbl(.x = fit_1, .y = test, ~rmse(model = .x, data = .y)),
+     rmse_fit_2 = map2_dbl(.x = fit_2, .y = test, ~rmse(model = .x, data = .y)), 
      rmse_myfit = map2_dbl(.x = myfit, .y = test, ~rmse(model = .x, data = .y))
   )
 ```
@@ -274,12 +274,16 @@ cv_df %>%
     everything(),
     names_to = "model",
     values_to = "rmse",
-    names_prefix = "rmse_ "
+    names_prefix = "rmse_"
   ) %>% 
   ggplot(aes(x = model,y =rmse,color = model))+
-  geom_violin()
+  geom_violin()+
+  labs(
+    y= "rmse", 
+    x = "Models",
+    title = "Comparison of RMSE for three models") 
 ```
 
-Based on the rmse values, 
+Lower rmse value means better regression model, so based on this plot, `myfit` has the lowest rmse value on average and `fit_1` has the greatest rmse value on average among these three models. Although the rmse value of `myfit` is about 275 which is pretty huge for a good regression model, `myfit` is still the best fit compared to two others.  
 
 
