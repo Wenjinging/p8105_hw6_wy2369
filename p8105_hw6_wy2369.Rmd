@@ -214,7 +214,9 @@ all_fit = lm(bwt~ ., data = birthweight_data)
 step(all_fit, direction = "both")
 ```
 
-The model selection is stepwise model selection which is a data-driven model-building process. Based on the results, the best model using stepwise should be bwt ~ babysex + bhead + blength + delwt + fincome + gaweeks + mheight + mrace + parity + ppwt + smoken. 
+The first step is put all variables in lm function and try to fit `all_fit` model, and then I use stepwise model selection to calculate and compare AIC to find the best model. 
+
+The stepwise model selection is a data-driven model-building process. Based on the results, the best model using stepwise should be bwt ~ babysex + bhead + blength + delwt + fincome + gaweeks + mheight + mrace + parity + ppwt + smoken. 
 
 ### Make a plot of residuals against fitted values
 
@@ -265,7 +267,7 @@ cv_df =
 
 ### Make a plot to check RMSE
 
-Compare rmse of these three models, I use `geom_violin` function to make this graph. 
+Compare rmse values of these three models, I use `geom_violin` function to make this graph in the code chunk below.
 
 ```{r}
 cv_df %>% 
